@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="x-icon" href="logo.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search Engine</title>
+    <link rel="stylesheet" href="Home.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Sen:wght@400;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="MovieSearch Logo">
+            <h1>MovieSearch</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#search">Genre</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="watchlist.html">Watchlist</a></li>
+            </ul>
+        </nav>
+        <div class="login-logo">
+            <a href="index.html">
+                <img src="login-logo.png" alt="Login">
+            </a>
+            <!-- home.html -->
+<script>
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
+        window.location.href = 'index.html';  // Redirect to login if not logged in
+    }
+</script>
+
+        </div>
+    </header>
+
+    <section class="Body"></section>
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Your Gateway to the World of Movies</h2>
+            <p>Find the latest and greatest movies in your favorite genres.</p>
+            <div class="search-container">
+                <input type="text" id="name" placeholder="Search movies..." onkeyup="showSuggestions()">
+                <button id="search-button" onclick="movieSearch()">Search</button>
+                <a href="moviedetails.html"></a>
+            </div>
+            <div class="suggestions" id="suggestions"></div>
+            <div id="loading">Loading...</div>
+            <div id="container"></div>
+        </div>
+        <div class="overlay"></div>
+    </section>
+
+    <section id="search" class="search-section">
+        <h1>Genre Movie</h1>
+        <div class="genre-buttons">
+            <button class="genre-button" data-genre="Action">Action</button>
+            <button class="genre-button" data-genre="Adventure">Adventure</button>
+            <button class="genre-button" data-genre="Animation">Animation</button>
+            <button class="genre-button" data-genre="Biography">Biography</button>
+            <button class="genre-button" data-genre="Comedy">Comedy</button>
+            <button class="genre-button" data-genre="Crime">Crime</button>
+            <button class="genre-button" data-genre="Documentary">Documentary</button>
+            <button class="genre-button" data-genre="Drama">Drama</button>
+            <button class="genre-button" data-genre="Fantasy">Fantasy</button>
+            <button class="genre-button" data-genre="Historical">Historical</button>
+            <button class="genre-button" data-genre="Horror">Horror</button>
+            <button class="genre-button" data-genre="Musical">Musical</button>
+            <button class="genre-button" data-genre="Mystery">Mystery</button>
+            <button class="genre-button" data-genre="Romance">Romance</button>
+            <button class="genre-button" data-genre="Sci-Fi">Sci-Fi</button>
+            <button class="genre-button" data-genre="Thriller">Thriller</button>
+            <button class="genre-button" data-genre="Western">Western</button>
+        </div>
+        <script>
+            document.querySelectorAll('.genre-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const genre = button.getAttribute('data-genre');
+                    // Open genre.html in a new tab with genre as a query parameter
+                    window.open(`genre.html?genre=${encodeURIComponent(genre)}`, '_blank');
+                });
+            });
+        </script>
+    </section>
+    <section>
+        <div id="top">
+            <div class="top10-section">
+                <h1>Top 10 Movies on IMBD</h1>
+                <div class="slider-container">
+                    <div class="movie-slider-wrapper">
+                        <div class="movie-slider" id="movie-slider"></div>
+                    </div>
+                    <button class="prev" onclick="moveSlide(-1)">&#10094;</button>
+                    <button class="next" onclick="moveSlide(1)">&#10095;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="container">
+        <div class="content-container">
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">New Releases</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="1.jpeg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                           
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="2.jpeg" alt="">
+                            <span class="movie-list-item-title">Star Wars</span>
+                           
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="3.jpg" alt="">
+                            <span class="movie-list-item-title">Storm</span>
+                          
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="4.jpg" alt="">
+                            <span class="movie-list-item-title">1917</span>
+                       
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="5.jpg" alt="">
+                            <span class="movie-list-item-title">Avengers</span>
+                            
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="6.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                   
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="7.jpg" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+            <div class="movie-list-container">
+                <h1 class="movie-list-title">New Releases</h1>
+                <div class="movie-list-wrapper">
+                    <div class="movie-list">
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="8.jpg" alt="">
+                            <span class="movie-list-item-title">Oblivion</span>
+                         
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="9.jpg" alt="">
+                            <span class="movie-list-item-title">Hobbit</span>
+                            
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="10.jpg" alt="">
+                            <span class="movie-list-item-title">Due Date</span>
+                           
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="11.jpg" alt="">
+                            <span class="movie-list-item-title">Kick-ass 2</span>
+                          
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="12.jpg" alt="">
+                            <span class="movie-list-item-title">The Emoji Movie</span>
+                        
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="movie8.png" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                            
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                        <div class="movie-list-item">
+                            <img class="movie-list-item-img" src="movie6.png" alt="">
+                            <span class="movie-list-item-title">Her</span>
+                        
+                            <button class="movie-list-item-button">Watch</button>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right arrow"></i>
+                </div>
+            </div>
+            <div class="featured-content"
+                style="background: linear-gradient(to bottom, rgba(0,0,0,0), #151515), url('f-2.jpg');">
+                <img class="featured-title" src="f-t-2.png" alt="">
+                <p class="featured-desc">A family saga with a supernatural twist, set in a German town where the disappearance of two young children exposes the relationships among four families.The first German production from the world's leading Internet TV Network is set in a present-day German town.</p>
+                <button class="featured-button">WATCH</button>
+            </div>
+
+            <section id="features" class="features-section">
+                <h3>Our Features</h3>
+                <div class="feature-cards">
+                    <div class="feature-card">
+                        <img src="Genre-selection.jpg" alt="Feature Icon 1">
+                        <h4>Wide Genre Selection</h4>
+                        <p>Explore movies across various genres including action, comedy, drama, and more.</p>
+                    </div>
+                    <div class="feature-card">
+                        <img src="real-time.jpg" alt="Feature Icon 2">
+                        <h4>Real-time Updates</h4>
+                        <p>Stay updated with the latest movies as soon as they’re available on popular platforms.</p>
+                    </div>
+                    <div class="feature-card">
+                        <img src="user-friendly.jpg" alt="Feature Icon 3">
+                        <h4>User-Friendly Interface</h4>
+                        <p>Our intuitive interface makes it easy to search and find the movies you love.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="about-section">
+                <h3>About Us</h3>
+                <p>MovieSearch is dedicated to bringing you the best and latest movies in the genres you enjoy.
+                    Whether you're a fan of action-packed thrillers or heartfelt dramas, our platform is your gateway to
+                    a world
+                    of entertainment.
+                    We believe in making movie discovery simple, accessible, and fun for everyone!</p>
+            </section>
+
+            <footer>
+                <div class="footer-content">
+                    <p>&copy; 2024 MovieSearch. All rights reserved.</p>
+                    <p>Connect with us:
+                        <a href="#">Instagram</a> |
+                        <a href="#">Twitter</a> |
+                        <a href="#">Facebook</a>
+                    </p>
+                </div>
+            </footer>
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="Home.js"></script>
+</body>
+
+</html>

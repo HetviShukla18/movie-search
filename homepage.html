@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" type="x-icon" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        /* Reset some default padding/margins */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styling with linear gradient background */
+        body {
+            padding: 30px;
+            background: linear-gradient(135deg, #1c1c1c, #333333, #121212);
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Title styling */
+        h1 {
+            text-align: center;
+            color: #ffcc00;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Information container styling */
+        .info-container {
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-align: left;
+        }
+
+        /* Info text styling */
+        .info-container div {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        /* Highlighted text styling */
+        span {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #ffcc00;
+        }
+
+        /* Button styling */
+        button {
+            display: inline-block;
+            color: #ffffff;
+            background: linear-gradient(450deg, #ff6600, #ffcc00);
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Button hover effect */
+        button:hover {
+            background-color: #3700b3;
+            color: #ffcc00;
+            transform: scale(1.05);
+        }
+    </style>
+    <script type="module" src="./homepage.js"></script>
+</head>
+<body>
+    <h1>Welcome to Movie Search Engine</h1>
+    <div class="info-container">
+        <div>First Name: <span id="loggedUserFName"></span></div>
+        <div>Last Name: <span id="loggedUserLName"></span></div>
+        <div>Email: <span id="loggedUserEmail"></span></div>
+    </div>
+    <button id="logout">Logout</button>
+</body>
+</html>

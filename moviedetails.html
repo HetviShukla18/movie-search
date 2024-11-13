@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" type="x-icon" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link rel="stylesheet" href="movieDetails.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #f5f5f5;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+
+        /* Header Styling */
+        header {
+            background-color: #1f1f1f;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(450deg, #ff6600, #ffcc00);
+            -webkit-background-clip: text;
+            color: transparent;
+            transition: background 0.5s ease-in-out;
+        }
+
+        h1:hover {
+            background: linear-gradient(350deg, #ffcc00, #ff6600);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* Movie Details Section */
+        #movie-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px auto;
+            max-width: 800px;
+            background-color: #1f1f1f;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        #poster {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #poster img {
+            width: 100%;
+            max-width: 600px;
+            /* Increased max-width for larger display */
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            /* Space between image and button */
+        }
+
+        #poster img:hover {
+            transform: scale(1.05);
+        }
+
+        #details {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #details h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        #details p {
+            margin-bottom: 10px;
+        }
+
+        #details strong {
+            color: #f5f5f5;
+        }
+
+        /* Watchlist Button Styling */
+        #watchlist-button {
+            background: linear-gradient(350deg, #ffcc00, #ff6600);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: solid;
+        }
+
+        #watchlist-button:hover {
+            background: linear-gradient(450deg, #ff6600, #ffcc00);
+        }
+
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            #movie-details {
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 40px;
+            }
+
+            #poster {
+                flex: 1;
+                margin-right: 20px;
+                /* Space between poster and details */
+            }
+
+            #details {
+                flex: 2;
+                text-align: left;
+            }
+
+            #details h2 {
+                text-align: left;
+            }
+        }
+
+        /* Footer Styling */
+        footer {
+            margin-top: 40px;
+            background-color: #1f1f1f;
+            padding: 20px;
+            text-align: center;
+            color: #f5f5f5;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Movie Details</h1>
+    </header>
+
+    <section id="movie-details">
+        <div id="poster">
+            <!-- Poster and button in the same flexbox container -->
+            <img src="" alt="Poster" id="movie-poster">
+            <button id="watchlist-button">Add to Watchlist</button>
+        </div>
+
+        <div id="details"></div>
+    </section>
+
+    <script>
+        // Function to fetch and display movie details
+        document.addEventListener("DOMContentLoaded", function () {
+            const movieData = JSON.parse(localStorage.getItem("selectedMovie"));
+
+            // Check if movieData exists in localStorage
+            if (movieData) {
+                // Display movie details
+                document.getElementById("movie-poster").src = movieData.Poster !== "N/A" ? movieData.Poster : 'defaultPoster.jpg';
+                document.getElementById("movie-poster").alt = movieData.Title + " Poster";
+
+                document.getElementById("details").innerHTML = `
+                    <h2>${movieData.Title}</h2>
+                    <p><strong>Plot:</strong> ${movieData.Plot}</p>
+                    <p><strong>Year:</strong> ${movieData.Year}</p>
+                    <p><strong>Director:</strong> ${movieData.Director}</p>
+                    <p><strong>Actors:</strong> ${movieData.Actors}</p>
+                    <p><strong>IMDB Rating:</strong> ${movieData.imdbRating}</p>
+                `;
+
+                // Add to Watchlist functionality
+                document.getElementById("watchlist-button").addEventListener("click", function () {
+                    let watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+
+                    // Check if movie is already in the watchlist
+                    if (!watchlist.some(movie => movie.Title === movieData.Title)) {
+                        watchlist.push(movieData);
+                        localStorage.setItem("watchlist", JSON.stringify(watchlist));
+                        alert(`${movieData.Title} has been added to your watchlist!`);
+                    } else {
+                        alert(`${movieData.Title} is already in your watchlist!`);
+                    }
+                });
+            } else {
+                // If no movie data is found, display an error message
+                document.getElementById("details").innerHTML = `<p>Movie data not found. Please go back and search for a movie.</p>`;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

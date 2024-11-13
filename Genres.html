@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genre Movies</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .movie-card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+            display: inline-block;
+        }
+        .movie-image {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        #movieContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination-button, .sort-button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        .sort-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Genre Movies</h1>
+    
+    <button class="sort-button" id="sortAscBtn">Sort by Rating (Asc)</button>
+    <button class="sort-button" id="sortDescBtn">Sort by Rating (Desc)</button>
+
+    <div id="movieContainer"></div>
+    <div class="pagination">
+        <button class="pagination-button" id="prevPageBtn" disabled>Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="pagination-button" id="nextPageBtn">Next</button>
+    </div>
+
+    <script>
+        const apiKey = '966c4f4f';
+let currentPage = 1;
+let currentGenre = '';
+let totalMovies = 0;
+let movies = []; 
+
+async function fetchMoviesByGenre(genre, page = 1) {
+    const url = `https://www.omdbapi.com/?s=${encodeURIComponent(genre)}&type=movie&apikey=${apiKey}&page=${page}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Network response was not ok.");
+        const data = await response.json();
+
+        if (data.Response === "False") {
+            throw new Error(data.Error);
+        }
+
+        totalMovies = parseInt(data.totalResults, 10);
+
+        // Fetch detailed information for each movie
+        movies = await Promise.all(data.Search.map(async movie => {
+            const movieDetailsUrl = `https://www.omdbapi.com/?i=${movie.imdbID}&apikey=${apiKey}`;
+            const detailsResponse = await fetch(movieDetailsUrl);
+
+            if (!detailsResponse.ok) throw new Error("Error fetching movie details.");
+
+            const detailsData = await detailsResponse.json();
+            console.log(`Fetched details for ${detailsData.Title}: Language - ${detailsData.Language}`);
+
+            return {
+                title: detailsData.Title,
+                year: detailsData.Year,
+                rating: detailsData.imdbRating === 'N/A' ? 0 : parseFloat(detailsData.imdbRating),
+                imageUrl: detailsData.Poster,
+                language: detailsData.Language // Retrieve the language of the movie
+            };
+        }));
+
+        displayMovies(movies);
+        updatePagination();
+    } catch (error) {
+        console.error("Error fetching genre movies:", error.message);
+    }
+}
+
+function displayMovies(movies) {
+    const movieContainer = document.getElementById("movieContainer");
+    movieContainer.innerHTML = "";
+
+    if (movies.length === 0) {
+        movieContainer.innerHTML = "<p>No movies found.</p>";
+        return;
+    }
+
+    movies.forEach(movie => {
+        const movieCard = document.createElement("div");
+        movieCard.classList.add("movie-card");
+        movieCard.innerHTML = `
+            <img src="${movie.imageUrl}" alt="${movie.title}" class="movie-image" />
+            <h3>${movie.title} (${movie.year})</h3>
+            <p>Rating: ${movie.rating || 'N/A'}</p>
+            <p>Language: ${movie.language || 'N/A'}</p>
+        `;
+        movieContainer.appendChild(movieCard);
+    });
+}
+
+function updatePagination() {
+    document.getElementById("pageInfo").textContent = `Page ${currentPage}`;
+    document.getElementById("prevPageBtn").disabled = currentPage === 1;
+    document.getElementById("nextPageBtn").disabled = (currentPage * 20) >= totalMovies;
+}
+
+function sortMovies(order) {
+    movies.sort((a, b) => {
+        return order === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+    });
+    displayMovies(movies);
+}
+
+document.getElementById("prevPageBtn").addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        fetchMoviesByGenre(currentGenre, currentPage);
+    }
+});
+
+document.getElementById("nextPageBtn").addEventListener("click", () => {
+    if (currentPage * 20 < totalMovies) {
+        currentPage++;
+        fetchMoviesByGenre(currentGenre, currentPage);
+    }
+});
+
+document.getElementById("sortAscBtn").addEventListener("click", () => {
+    sortMovies('asc');
+});
+
+document.getElementById("sortDescBtn").addEventListener("click", () => {
+    sortMovies('desc');
+});
+
+// Extract the genre from the URL query parameter
+const urlParams = new URLSearchParams(window.location.search);
+currentGenre = urlParams.get('genre');
+if (currentGenre) fetchMoviesByGenre(currentGenre, currentPage);
+
+       </script>
+</body>
+</html>

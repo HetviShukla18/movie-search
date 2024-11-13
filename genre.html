@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="shortcut icon" type="x-icon" href="logo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genre Movies</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #genreTitle {
+            font-size: 3em;
+            text-align: center;
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+
+        .movie-card {
+            background-color: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+            margin: 10px;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.05);
+        }
+
+        .movie-image {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        #movieContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pagination,
+        .sort-controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .pagination-button,
+        .sort-button {
+            padding: 8px 12px;
+            background: linear-gradient(450deg, #ff6600, #ffcc00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+
+        .pagination-button:hover,
+        .sort-button:hover {
+            background: linear-gradient(350deg, #ffcc00, #ff6600);
+        }
+
+        #loadingMessage {
+            text-align: center;
+            font-size: 1.2em;
+            color: #ffcc00;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="genreTitle"></div>
+    <div id="loadingMessage"></div>
+
+    <div class="sort-controls">
+        <button class="sort-button" id="sortAscBtn">Sort by Rating (Asc)</button>
+        <button class="sort-button" id="sortDescBtn">Sort by Rating (Desc)</button>
+    </div>
+
+    <div id="movieContainer"></div>
+    <div class="pagination">
+        <button class="pagination-button" id="prevPageBtn" disabled>Previous</button>
+        <span id="pageInfo">Page 1</span>
+        <button class="pagination-button" id="nextPageBtn">Next</button>
+    </div>
+
+    <script>
+        const imdbKeys = [
+            '4b447405', 'eb0c0475', '7776cbde', 'ff28f90b', '6c3a2d45',
+            'b07b58c8', 'ad04b643', 'a95b5205', '777d9323', '2c2c3314',
+            'b5cff164', '89a9f57d', '73a9858a', 'efbd8357'
+        ];
+        let currentKeyIndex = 0;
+        let currentPage = 1;
+        let currentGenre = '';
+        let totalMovies = 0;
+        let movies = [];
+
+        // Get the current API key and rotate it if needed
+        function getApiKey() {
+            const key = imdbKeys[currentKeyIndex];
+            currentKeyIndex = (currentKeyIndex + 1) % imdbKeys.length;
+            return key;
+        }
+
+        // Fetch basic movie data (without ratings) by genre
+        async function fetchMoviesByGenre(genre, page = 1) {
+            const url = `https://www.omdbapi.com/?s=${encodeURIComponent(genre)}&type=movie&apikey=${getApiKey()}&page=${page}`;
+            document.getElementById("loadingMessage").textContent = "Loading movies...";
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Network response was not ok.");
+                const data = await response.json();
+
+                if (data.Response === "False") throw new Error(data.Error);
+
+                totalMovies = parseInt(data.totalResults, 10);
+                const movieList = data.Search || [];
+
+                // Display the first page quickly without ratings
+                movies = movieList.map(movie => ({
+                    title: movie.Title,
+                    year: movie.Year,
+                    imdbID: movie.imdbID,
+                    imageUrl: movie.Poster,
+                    rating: null // Placeholder for rating to be added later
+                }));
+                displayMovies(movies);
+                updatePagination();
+
+                // Load IMDb ratings asynchronously for the first page
+                loadMovieRatings(movies);
+            } catch (error) {
+                console.error("Error fetching genre movies:", error.message);
+            } finally {
+                document.getElementById("loadingMessage").textContent = "";
+            }
+        }
+
+        // Load IMDb ratings asynchronously
+        async function loadMovieRatings(movieList) {
+            await Promise.all(movieList.map(async movie => {
+                const url = `https://www.omdbapi.com/?i=${movie.imdbID}&apikey=${getApiKey()}`;
+                const response = await fetch(url);
+                const details = await response.json();
+                movie.rating = details.imdbRating === 'N/A' ? 0 : parseFloat(details.imdbRating);
+
+                // Update the displayed rating once fetched
+                const ratingElement = document.querySelector(`#rating-${movie.imdbID}`);
+                if (ratingElement) {
+                    ratingElement.textContent = `Rating: ${movie.rating || 'N/A'}`;
+                }
+            }));
+        }
+
+        // Display movies on the page
+        function displayMovies(movies) {
+            const movieContainer = document.getElementById("movieContainer");
+            movieContainer.innerHTML = "";
+
+            if (movies.length === 0) {
+                movieContainer.innerHTML = "<p>No movies found.</p>";
+                return;
+            }
+
+            movies.forEach(movie => {
+                const movieCard = document.createElement("div");
+                movieCard.classList.add("movie-card");
+                movieCard.innerHTML = `
+                    <img src="${movie.imageUrl}" alt="${movie.title}" class="movie-image" />
+                    <h3>${movie.title} (${movie.year})</h3>
+                    <p id="rating-${movie.imdbID}">Rating: ${movie.rating || 'Loading...'}</p>
+                `;
+                movieContainer.appendChild(movieCard);
+            });
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            document.getElementById("pageInfo").textContent = `Page ${currentPage}`;
+            document.getElementById("prevPageBtn").disabled = currentPage === 1;
+            document.getElementById("nextPageBtn").disabled = (currentPage * 10) >= totalMovies;
+        }
+
+        // Sort movies by rating
+        function sortMovies(order) {
+            movies.sort((a, b) => order === 'asc' ? a.rating - b.rating : b.rating - a.rating);
+            displayMovies(movies);
+        }
+
+        // Event listeners
+        document.getElementById("prevPageBtn").addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchMoviesByGenre(currentGenre, currentPage);
+            }
+        });
+
+        document.getElementById("nextPageBtn").addEventListener("click", () => {
+            if (currentPage * 10 < totalMovies) {
+                currentPage++;
+                fetchMoviesByGenre(currentGenre, currentPage);
+            }
+        });
+
+        document.getElementById("sortAscBtn").addEventListener("click", () => sortMovies('asc'));
+        document.getElementById("sortDescBtn").addEventListener("click", () => sortMovies('desc'));
+
+        // Get the genre from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        currentGenre = urlParams.get('genre');
+        if (currentGenre) {
+            document.getElementById("genreTitle").textContent = `Movies in ${currentGenre} Genre`;
+            fetchMoviesByGenre(currentGenre, currentPage);
+        }
+    </script>
+</body>
+
+</html>
