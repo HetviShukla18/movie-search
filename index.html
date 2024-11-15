@@ -267,14 +267,6 @@
                 window.open(`movieDetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
             }
         });
-            
-            // Set a timer to automatically redirect to register.html after 10 seconds
-            setTimeout(() => {
-                window.location.href = 'register.html';
-            }, 10000); // 10000 milliseconds = 10 seconds
-        } else {
-            alert("Please enter a movie name to search.");
-        }
     });
 </script>
 
