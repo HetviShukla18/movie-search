@@ -49,7 +49,7 @@
             <div class="search-container">
                 <input type="text" id="name" placeholder="Search movies..." onkeyup="showSuggestions()">
                 <button id="search-button" onclick="movieSearch()">Search</button>
-                <a href="./moviedetails.html"></a>
+                <a href="movieDetails.html"></a>
             </div>
             <div class="suggestions" id="suggestions"></div>
             <div id="loading">Loading...</div>
@@ -264,7 +264,7 @@
 
             if (searchQuery) {
                 // Open moviedetails.html with the search query as a parameter
-                window.open(`moviedetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
+                window.open(`movieDetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
             }
         });
             
