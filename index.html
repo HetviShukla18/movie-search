@@ -255,6 +255,25 @@
 
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="Home.js"></script>
+            <script>
+    // Add click event listener to the search button
+    document.getElementById('search-button').addEventListener('click', () => {
+        const searchQuery = document.getElementById('search-input').value.trim();
+
+        if (searchQuery) {
+            // Open moviedetails.html with the search query as a parameter
+            window.open(`moviedetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
+            
+            // Set a timer to automatically redirect to register.html after 10 seconds
+            setTimeout(() => {
+                window.location.href = 'register.html';
+            }, 10000); // 10000 milliseconds = 10 seconds
+        } else {
+            alert("Please enter a movie name to search.");
+        }
+    });
+</script>
+
 </body>
 
 </html>
