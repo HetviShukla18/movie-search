@@ -250,9 +250,45 @@ function moveSlide(direction) {
 
 // Initial population of the movies
 populateTop10Movies();
+// Wait for the DOM to fully load
+document.addEventListener('DOMContentLoaded', () => {
+    // Function to show the login form
+    function showLoginForm() {
+        const loginForm = document.getElementById('loginForm'); // Your login form element
+        if (loginForm) {
+            loginForm.style.display = 'block';
+        } else {
+            console.error('Login form element not found.');
+        }
+    }
 
-window.addEventListener('load', () => {     
-    // Check if user is logged in and if redirect flag is set for the session
+    // Function to handle login
+    function handleLogin() {
+        const username = document.getElementById('username')?.value;
+        const password = document.getElementById('password')?.value;
+
+        // Basic example validation (replace with your backend/auth logic)
+        if (username === 'user' && password === 'pass') { // Placeholder check
+            localStorage.setItem('isLoggedIn', 'true'); // Set logged-in flag
+            sessionStorage.setItem('hasRedirected', 'true'); // Set session redirect flag
+
+            // Redirect to the register page after 10 seconds
+            setTimeout(() => {
+                window.location.href = 'register.html';
+            }, 10000);
+        } else {
+            alert('Invalid credentials. Please try again.');
+        }
+    }
+
+    // Function to handle logout
+    function logout() {
+        localStorage.removeItem('isLoggedIn');
+        sessionStorage.removeItem('hasRedirected');
+        window.location.href = 'login.html'; // Redirect to login page
+    }
+
+    // Main logic to check login status
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const hasRedirected = sessionStorage.getItem('hasRedirected');
 
@@ -260,52 +296,23 @@ window.addEventListener('load', () => {
         // Show login form if the user is not logged in
         showLoginForm();
 
-        // Example login button event listener
-        document.getElementById('loginButton').addEventListener('click', () => {
-            // Perform login logic here (check username/password)
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Example login validation (replace with your own logic)
-            if (username === 'user' && password === 'pass') { // Placeholder check
-                // After successful login, set the logged-in flag
-                localStorage.setItem('isLoggedIn', 'true');
-                
-                // Set the redirect flag for the current session
-                sessionStorage.setItem('hasRedirected', 'true');
-                
-                // Redirect to index.html after 10 seconds
-                setTimeout(() => {
-                    window.location.href = 'register.html';
-                }, 10000);
-            } else {
-                alert('Invalid credentials. Please try again.');
-            }
-        });
+        // Attach event listener to login button
+        const loginButton = document.getElementById('loginButton');
+        if (loginButton) {
+            loginButton.addEventListener('click', handleLogin);
+        } else {
+            console.error('Login button element not found.');
+        }
     } else if (!hasRedirected) {
-        // If the user is already logged in and hasn't been redirected in this session
+        // If user is logged in but not redirected in this session
         sessionStorage.setItem('hasRedirected', 'true');
-        
-        // Redirect to index.html after 10 seconds
+
+        // Redirect to the register page after 10 seconds
         setTimeout(() => {
             window.location.href = 'register.html';
         }, 10000);
     }
 });
-
-// Function to show the login form (implement this based on your needs)
-function showLoginForm() {
-    const loginForm = document.getElementById('loginForm'); // Your login form element
-    loginForm.style.display = 'block'; // Show the login form (change as per your implementation)
-}
-
-// Optionally, you may want to handle logout
-function logout() {
-    localStorage.removeItem('isLoggedIn');
-    sessionStorage.removeItem('hasRedirected');
-    // Optionally, redirect to the login page or refresh the page
-    window.location.href = 'register.html'; // Replace with your login page
-}
 
 
 function login() {
