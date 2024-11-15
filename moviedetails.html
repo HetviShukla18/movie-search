@@ -206,6 +206,12 @@
                 document.getElementById("details").innerHTML = `<p>Movie data not found. Please go back and search for a movie.</p>`;
             }
         });
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+    console.log(`Search Query: ${query}`);
+    // Use the `query` to fetch and display movie-specific details.
+
+
     </script>
 
 </body>
