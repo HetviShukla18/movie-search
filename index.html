@@ -256,13 +256,17 @@
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             <script src="Home.js"></script>
             <script>
-    // Add click event listener to the search button
-    document.getElementById('search-button').addEventListener('click', () => {
-        const searchQuery = document.getElementById('search-input').value.trim();
+            document.getElementById('search-button').addEventListener('click', (event) => {
+            event.preventDefault();  // Prevent form submission if inside a form
 
-        if (searchQuery) {
-            // Open moviedetails.html with the search query as a parameter
-            window.open(`moviedetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
+            const searchQuery = document.getElementById('name').value.trim();
+            console.log(searchQuery);  // Log the search query
+
+            if (searchQuery) {
+                // Open moviedetails.html with the search query as a parameter
+                window.open(`moviedetails.html?query=${encodeURIComponent(searchQuery)}`, '_blank');
+            }
+        });
             
             // Set a timer to automatically redirect to register.html after 10 seconds
             setTimeout(() => {
