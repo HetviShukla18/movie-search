@@ -15,7 +15,7 @@ async function movieSearch() {
             localStorage.setItem("selectedMovie", JSON.stringify(data));
 
             // Open the new page with movie details in a new tab
-            window.open('movieDetails.html', '_blank');
+            window.open('moviedetails.html', '_blank');
         } else {
             alert("Movie not found!");
         }
